@@ -1,5 +1,7 @@
+from os import fwalk
 from flask import (Flask, render_template, make_response, url_for, request,
                    redirect, flash, session, send_from_directory, jsonify)
+from pymysql import NULL
 from werkzeug.utils import secure_filename
 app = Flask(__name__)
 
@@ -8,10 +10,10 @@ app = Flask(__name__)
 
 import cs304dbi as dbi
 # import cs304dbi_sqlite3 as dbi
-
+import crud
 import random
 
-app.secret_key = 'your secret here'
+app.secret_key = 'cs304'
 # replace that with a random key
 app.secret_key = ''.join([ random.choice(('ABCDEFGHIJKLMNOPQRSTUVXYZ' +
                                           'abcdefghijklmnopqrstuvxyz' +
@@ -23,51 +25,51 @@ app.config['TRAP_BAD_REQUEST_ERRORS'] = True
 
 @app.route('/')
 def index():
-    return render_template('main.html',title='Hello')
+    return render_template('main.html', page_title = 'Welcome')
 
-@app.route('/greet/', methods=["GET", "POST"])
-def greet():
+@app.route('/insert/', methods=['GET','POST'])
+def insert():
     if request.method == 'GET':
-        return render_template('greet.html', title='Customized Greeting')
+        return render_template('insert.html', page_title = 'Insert')
     else:
-        try:
-            username = request.form['username'] # throws error if there's trouble
-            flash('form submission successful')
-            return render_template('greet.html',
-                                   title='Welcome '+username,
-                                   name=username)
+        tt = request.form.get('movie-tt')
+        title = request.form.get('movie-title')
+        release = request.form.get('movie-release')
+        if not tt or not title or not release:
+            flash('missing input')
+            return redirect(url_for('insert'))
+        else:
+            tt = int(tt)
+            title = str(title)
+            release = int(release)
+            conn = dbi.connect()
+            if len(crud.check_tt(conn, tt)) == 0:
+                flash('tt does not already exist')
+                jid = int(8242)
+                crud.insert_mov(conn, tt, title, release, jid)
+                session['title'] = title
+                session['release'] = release
+                session['jid'] = jid
+                return redirect(url_for('update', tt = tt))
 
-        except Exception as err:
-            flash('form submission error'+str(err))
-            return redirect( url_for('index') )
-
-@app.route('/formecho/', methods=['GET','POST'])
-def formecho():
+@app.route('/update/<int:tt>', methods=['GET','POST'])
+def update(tt):
     if request.method == 'GET':
-        return render_template('form_data.html',
-                               method=request.method,
-                               form_data=request.args)
-    elif request.method == 'POST':
-        return render_template('form_data.html',
-                               method=request.method,
-                               form_data=request.form)
-    else:
-        # maybe PUT?
-        return render_template('form_data.html',
-                               method=request.method,
-                               form_data={})
+        title = session.get('title')
+        release = session.get('release')
+        jid = session.get('jid')
+        return render_template('update.html', page_title = 'Update', tt = tt, title = title, release = release, jid = jid)
+    # else:
 
-@app.route('/testform/')
-def testform():
-    # these forms go to the formecho route
-    return render_template('testform.html')
-
+@app.route('/select/')
+def select():
+    return
 
 @app.before_first_request
 def init_db():
     dbi.cache_cnf()
     # set this local variable to 'wmdb' or your personal or team db
-    db_to_use = 'put_database_name_here_db' 
+    db_to_use = 'js8_db' 
     dbi.use(db_to_use)
     print('will connect to {}'.format(db_to_use))
 

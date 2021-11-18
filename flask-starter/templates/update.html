@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block main_content %}
+
+<form method="POST" action="{{url_for('update')}}">
+    <p><label>tt:
+        <input type = "movie-tt" placeholder ="tt..." value = {{tt}} name = "movie-tt">
+        </label>
+        <label>title:
+        <input type = "movie-title" placeholder ="title..." value = {{title}} name = "movie-title">
+        </label>
+        <label>release:
+        <input type = "movie-release" placeholder ="release..." value = {{release}} name = "movie-release">
+        </label>
+        <label>director:
+        <input type = "movie-director" placeholder ="director..." name = "movie-director">
+        </label>  
+        <label>addedby:
+        <input type = "movie-addedby" placeholder ="added by..." value = {{jid}} name = "movie-addedby">
+        </label><p><input type="submit" value="update">
+    </form>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div id="messages">
+      {% for msg in messages %}
+      <p>{{msg}}</p>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+{% endblock %}

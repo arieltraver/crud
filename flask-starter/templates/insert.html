@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block main_content %}
+
+<form method="POST" action="{{url_for('insert')}}">
+    <p><label>tt:
+        <input type = "movie-tt" placeholder ="tt..." name = "movie-tt">
+      </label>
+        <label>title:
+        <input type = "movie-title" placeholder ="title..." name = "movie-title">
+      </label>
+      <label>release:
+        <input type = "movie-release" placeholder ="release..." name = "movie-release">
+      </label></p><input type="submit" value="insert"></p>
+ </form>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div id="messages">
+      {% for msg in messages %}
+      <p>{{msg}}</p>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+{% endblock %}
