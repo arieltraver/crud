@@ -1,5 +1,4 @@
 import cs304dbi as dbi
-from pymysql import NULL
 
 def check_tt(conn, tt):
     curs = dbi.dict_cursor(conn)
