@@ -2,7 +2,7 @@
 
 {% block main_content %}
 
-<form method="POST" action="{{url_for('update')}}">
+<form method="POST" action="{{url_for('update', tt = tt, title = title, release = release, jid = jid)}}">
     <p><label>tt:
         <input type = "movie-tt" placeholder ="tt..." value = {{tt}} name = "movie-tt">
         </label>

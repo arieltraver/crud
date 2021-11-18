@@ -23,6 +23,8 @@ app.secret_key = ''.join([ random.choice(('ABCDEFGHIJKLMNOPQRSTUVXYZ' +
 # This gets us better error messages for certain common request errors
 app.config['TRAP_BAD_REQUEST_ERRORS'] = True
 
+jid = 8242
+
 @app.route('/')
 def index():
     return render_template('main.html', page_title = 'Welcome')
@@ -45,11 +47,9 @@ def insert():
             conn = dbi.connect()
             if len(crud.check_tt(conn, tt)) == 0:
                 flash('tt does not already exist')
-                jid = int(8242)
                 crud.insert_mov(conn, tt, title, release, jid)
                 session['title'] = title
                 session['release'] = release
-                session['jid'] = jid
                 return redirect(url_for('update', tt = tt))
 
 @app.route('/update/<int:tt>', methods=['GET','POST'])
@@ -57,7 +57,6 @@ def update(tt):
     if request.method == 'GET':
         title = session.get('title')
         release = session.get('release')
-        jid = session.get('jid')
         return render_template('update.html', page_title = 'Update', tt = tt, title = title, release = release, jid = jid)
     # else:
 
