@@ -58,7 +58,20 @@ def update(tt):
         title = session.get('title')
         release = session.get('release')
         return render_template('update.html', page_title = 'Update', tt = tt, title = title, release = release, jid = jid)
-    # else:
+    else:
+        newtt = request.form.get('movie-tt')
+        title = request.form.get('movie-title')
+        release = request.form.get('movie-release')
+        director = request.form.get('movie-director')
+        addedby = request.form.get('movie-addedby')
+        conn = dbi.connect()
+        if len(crud.check_tt(conn, tt)) != 0:
+            flash('tt already in use')
+        #if tt != newtt:
+            #crud.update_mov(conn, newtt, title, release, director, addedby)
+        #if len(crud.check_tt(conn, tt)) == 0:
+                #flash('tt does not already exist')
+                #crud.insert_mov(conn, tt, title, release, jid)
 
 @app.route('/select/')
 def select():
