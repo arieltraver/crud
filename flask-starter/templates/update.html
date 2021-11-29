@@ -2,22 +2,23 @@
 
 {% block main_content %}
 
-<form method="POST" action="{{url_for('update', tt = tt, title = title, release = release, jid = jid)}}">
+<form method="POST" action="{{url_for('update', tt = tt, title = title, release = release, director = director, addedby = addedby)}}">
     <p><label>tt:
         <input type = "movie-tt" placeholder ="tt..." value = {{tt}} name = "movie-tt">
         </label>
         <label>title:
-        <input type = "movie-title" placeholder ="title..." value = {{title}} name = "movie-title">
+        <input type = "movie-title" placeholder ="title..." value = "{{title}}" name = "movie-title">
         </label>
         <label>release:
         <input type = "movie-release" placeholder ="release..." value = {{release}} name = "movie-release">
         </label>
         <label>director:
-        <input type = "movie-director" placeholder ="director..." name = "movie-director">
+        <input type = "movie-director" placeholder ="director..." value = {{director}} name = "movie-director">
         </label>  
         <label>addedby:
-        <input type = "movie-addedby" placeholder ="added by..." value = {{jid}} name = "movie-addedby">
+        <input type = "movie-addedby" placeholder ="added by..." value = {{addedby}} name = "movie-addedby">
         </label><p><input type="submit" value="update">
+          <input type="submit" value="delete">
     </form>
 
     {% with messages = get_flashed_messages() %}

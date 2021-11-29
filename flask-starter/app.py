@@ -23,7 +23,7 @@ app.secret_key = ''.join([ random.choice(('ABCDEFGHIJKLMNOPQRSTUVXYZ' +
 # This gets us better error messages for certain common request errors
 app.config['TRAP_BAD_REQUEST_ERRORS'] = True
 
-jid = 8242
+jid = int(8242)
 
 @app.route('/')
 def index():
@@ -37,7 +37,7 @@ def insert():
         tt = request.form.get('movie-tt')
         title = request.form.get('movie-title')
         release = request.form.get('movie-release')
-        if not tt or not title or not release:
+        if not tt or not title or not release: 
             flash('missing input')
             return redirect(url_for('insert'))
         else:
@@ -57,25 +57,44 @@ def update(tt):
     if request.method == 'GET':
         title = session.get('title')
         release = session.get('release')
-        return render_template('update.html', page_title = 'Update', tt = tt, title = title, release = release, jid = jid)
+        director = session.get('director')
+        addedby = session.get('addedby')
+        if addedby == None:
+            addedby = jid
+        return render_template('update.html', page_title = 'Update', tt = tt, title = title, release = release, addedby = addedby)
     else:
-        newtt = request.form.get('movie-tt')
-        title = request.form.get('movie-title')
-        release = request.form.get('movie-release')
-        director = request.form.get('movie-director')
-        addedby = request.form.get('movie-addedby')
+        newtt = int(request.form.get('movie-tt'))
         conn = dbi.connect()
-        if len(crud.check_tt(conn, tt)) != 0:
-            flash('tt already in use')
-        #if tt != newtt:
-            #crud.update_mov(conn, newtt, title, release, director, addedby)
-        #if len(crud.check_tt(conn, tt)) == 0:
-                #flash('tt does not already exist')
-                #crud.insert_mov(conn, tt, title, release, jid)
+        if request.form.get('submit') == 'update':
+            title = request.form.get('movie-title')
+            release = request.form.get('movie-release')
+            director = request.form.get('movie-director')
+            addedby = request.form.get('movie-addedby')
+            if len(crud.check_tt(conn, newtt)) != 0:
+                flash('tt already exists')
+            else:
+                crud.update_mov(conn, tt, newtt, title, release, director, addedby)
+                return render_template('update.html', page_title = 'Update', tt = newtt, title = title, release = release, director = director, addedby = addedby)
+        elif request.form.get('submit') == 'delete':
+            crud.delete_mov(conn, newtt)
+            flash('movie was deleted successfully')
+            return redirect(url_for('index', page_title = 'Welcome')) 
 
-@app.route('/select/')
+@app.route('/select/', methods=['GET','POST'])
 def select():
-    return
+    if request.method == 'GET':
+        conn = dbi.connect()
+        movs = crud.select_mov(conn)
+        return render_template('select.html', page_title = 'Select', movs = movs)
+    else:
+        tt = int(request.form.get('menu-tt'))
+        conn = dbi.connect()
+        info = crud.check_tt(conn, tt)[0]
+        session['title'] = info['title']
+        session['release'] = info['release']
+        session['director'] = info['director']
+        session['addedby'] = info['addedby']
+        return redirect(url_for('update', page_title = 'Update', tt = tt)) 
 
 @app.before_first_request
 def init_db():

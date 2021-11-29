@@ -3,9 +3,9 @@ import cs304dbi as dbi
 def check_tt(conn, tt):
     curs = dbi.dict_cursor(conn)
     curs.execute('''
-        select *
+        select title, `release`, director, addedby
         from movie
-        where tt = %s''', [tt])
+        where tt = %s''', (tt))
     return curs.fetchall()
 
 def insert_mov(conn, tt, title, release, addedby):
@@ -18,11 +18,22 @@ def insert_mov(conn, tt, title, release, addedby):
 
 def update_mov(conn, tt, newtt, title, release, director, addedby):
     curs = dbi.dict_cursor(conn)
-    #if tt != new tt:
-     #if check_tt is not null then throw error
-     #else update the tt
     curs.execute('''
-        update movie
-        set ''')
+        update movie set tt = %s, title = %s, `release` = %s, director = %s, addedby = %s where tt = %s''', (newtt, title, release, director, addedby, tt))
     conn.commit()
     return
+
+def delete_mov(conn, tt):
+    curs = dbi.dict_cursor(conn)
+    curs.execute('''
+        delete from movie where tt = %s''', (tt))
+    conn.commit()
+    return
+
+def select_mov(conn):
+    curs = dbi.dict_cursor(conn)
+    curs.execute('''
+        select tt, title
+        from movie
+        where director is null or `release` is null''')
+    return curs.fetchall()
