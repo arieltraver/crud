@@ -61,40 +61,15 @@ def update(tt):
         addedby = session.get('addedby')
         if addedby == None:
             addedby = jid
-<<<<<<< HEAD:app.py
-        return render_template('update.html', page_title = 'Update', tt = tt, title = title, release = release, director = director, addedby = addedby)
-    else:
-        newtt = int(request.form.get('movie-tt'))
-        conn = dbi.connect()
-        if request.form['submit'] == 'update':
-=======
         return render_template('update.html', page_title = 'Update', tt = tt, title = title, release = release, addedby = addedby)
     else:
         newtt = int(request.form.get('movie-tt'))
         conn = dbi.connect()
         if request.form.get('submit') == 'update':
->>>>>>> 6f64fcd9d752c544b855a55d8dda9a91946ee967:flask-starter/app.py
             title = request.form.get('movie-title')
             release = request.form.get('movie-release')
             director = request.form.get('movie-director')
             addedby = request.form.get('movie-addedby')
-<<<<<<< HEAD:app.py
-            if newtt != tt and len(crud.check_tt(conn, newtt)) != 0:
-                flash('tt already exists')
-                return redirect(url_for('update', tt = tt))
-            else:
-                crud.update_mov(conn, tt, newtt, title, release, director, addedby)
-                flash('movie was updated successfully')
-                session['title'] = title
-                session['release'] = release
-                session['director'] = director
-                session['addedby'] = addedby
-                return redirect(url_for('update', tt = newtt))
-        elif request.form['submit'] == 'delete':
-            crud.delete_mov(conn, newtt)
-            flash('movie was deleted successfully')
-            return redirect(url_for('index')) 
-=======
             if len(crud.check_tt(conn, newtt)) != 0:
                 flash('tt already exists')
             else:
@@ -104,7 +79,6 @@ def update(tt):
             crud.delete_mov(conn, newtt)
             flash('movie was deleted successfully')
             return redirect(url_for('index', page_title = 'Welcome')) 
->>>>>>> 6f64fcd9d752c544b855a55d8dda9a91946ee967:flask-starter/app.py
 
 @app.route('/select/', methods=['GET','POST'])
 def select():
@@ -120,11 +94,7 @@ def select():
         session['release'] = info['release']
         session['director'] = info['director']
         session['addedby'] = info['addedby']
-<<<<<<< HEAD:app.py
-        return redirect(url_for('update', tt = tt)) 
-=======
         return redirect(url_for('update', page_title = 'Update', tt = tt)) 
->>>>>>> 6f64fcd9d752c544b855a55d8dda9a91946ee967:flask-starter/app.py
 
 @app.before_first_request
 def init_db():
