@@ -1,17 +1,20 @@
+<!-- Ariel Traver and Jennifer Shan -->
+<!-- insert.html -->
+
 {% extends "base.html" %}
 
 {% block main_content %}
 
-<form method="POST" action="{{url_for('insert')}}">
+<form method="POST" action="/insert/">
     <p><label>tt:
-        <input type = "movie-tt" placeholder ="tt..." name = "movie-tt">
+        <input type = "movie-tt" name = "movie-tt">
       </label>
         <label>title:
-        <input type = "movie-title" placeholder ="title..." name = "movie-title">
+        <input type = "movie-title" name = "movie-title">
       </label>
       <label>release:
-        <input type = "movie-release" placeholder ="release..." name = "movie-release">
-      </label></p><input type="submit" value="insert"></p>
+        <input type = "movie-release" name = "movie-release">
+      </label></p><input type="submit" value="insert">
  </form>
 
     {% with messages = get_flashed_messages() %}

@@ -1,0 +1,22 @@
+<!-- Ariel Traver and Jennifer Shan -->
+<!-- main.html -->
+
+{% extends "base.html" %}
+
+{% block main_content %}
+
+<h1>WMDB Interactions</h1>
+
+<p>Welcome to our page where you can insert, update, and delete data.</p>
+
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div id="messages">
+      {% for msg in messages %}
+      <p>{{msg}}</p>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+{% endblock %}

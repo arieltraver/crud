@@ -1,0 +1,37 @@
+<!-- Ariel Traver and Jennifer Shan -->
+<!-- update.html -->
+
+{% extends "base.html" %}
+
+{% block main_content %}
+
+<form method="POST" action="{{url_for('update', tt = tt, title = title, release = release, director = director, addedby = addedby)}}">
+    <p><label>tt:
+        <input type = "movie-tt" value = {{tt}} name = "movie-tt">
+        </label>
+        <label>title:
+        <input type = "movie-title" value = "{{title}}" name = "movie-title">
+        </label>
+        <label>release:
+        <input type = "movie-release" value = {{release}} name = "movie-release">
+        </label>
+        <label>director:
+        <input type = "movie-director" value = {{director}} name = "movie-director">
+        </label>  
+        <label>addedby:
+        <input type = "movie-addedby" value = {{addedby}} name = "movie-addedby">
+        </label><p><input type="submit" name="submit" value="update">
+          <input type="submit" name="submit" value="delete">
+    </form>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div id="messages">
+      {% for msg in messages %}
+      <p>{{msg}}</p>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+{% endblock %}
