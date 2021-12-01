@@ -57,9 +57,11 @@ def update(tt):
     if request.method == 'GET':
         title = session.get('title')
         release = session.get('release')
-        director = session.get('director')
-        addedby = session.get('addedby')
-        if addedby == None:
+        if session.get('director'):
+            director = session.get('director')
+        if session.get('addedby'):
+            addedby = session.get('addedby')
+        else:
             addedby = jid
         return render_template('update.html', page_title = 'Update', tt = tt, title = title, release = release, addedby = addedby)
     else:
@@ -69,6 +71,7 @@ def update(tt):
             title = request.form.get('movie-title')
             release = request.form.get('movie-release')
             director = request.form.get('movie-director')
+            print(release, director)
             addedby = request.form.get('movie-addedby')
             if len(crud.check_tt(conn, newtt)) != 0:
                 flash('tt already exists')
