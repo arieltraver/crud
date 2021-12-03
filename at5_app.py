@@ -26,7 +26,7 @@ app.secret_key = ''.join([ random.choice(('ABCDEFGHIJKLMNOPQRSTUVXYZ' +
 # This gets us better error messages for certain common request errors
 app.config['TRAP_BAD_REQUEST_ERRORS'] = True
 
-jid = int(8343)
+jid = int(8363)
 
 @app.route('/')
 def index():
@@ -106,7 +106,7 @@ def select():
 def init_db():
     dbi.cache_cnf()
     # set this local variable to 'wmdb' or your personal or team db
-    db_to_use = 'j8_db' 
+    db_to_use = 'at5_db' 
     dbi.use(db_to_use)
     print('will connect to {}'.format(db_to_use))
 
