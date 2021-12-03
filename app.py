@@ -59,29 +59,32 @@ def update(tt):
         release = session.get('release')
         if session.get('director'):
             director = session.get('director')
+        else:
+            director = None
         if session.get('addedby'):
             addedby = session.get('addedby')
         else:
             addedby = jid
-        return render_template('update.html', page_title = 'Update', tt = tt, title = title, release = release, addedby = addedby)
+        return render_template('update.html', page_title = 'Update', tt = tt, title = title, release = release, director = director, addedby = addedby)
     else:
-        newtt = int(request.form.get('movie-tt'))
+        newtt = request.form.get('movie-tt')
         conn = dbi.connect()
         if request.form.get('submit') == 'update':
             title = request.form.get('movie-title')
             release = request.form.get('movie-release')
             director = request.form.get('movie-director')
-            print(release, director)
             addedby = request.form.get('movie-addedby')
-            if len(crud.check_tt(conn, newtt)) != 0:
+            if int(newtt) != int(tt) and len(crud.check_tt(conn, newtt)) != 0:
                 flash('tt already exists')
+                return redirect(url_for('update', tt = tt))
             else:
                 crud.update_mov(conn, tt, newtt, title, release, director, addedby)
-                return render_template('update.html', page_title = 'Update', tt = newtt, title = title, release = release, director = director, addedby = addedby)
+                flash('movie updated successfully')
+                return render_template('update.html', tt = newtt, title = title, release = release, director = director, addedby = addedby)
         elif request.form.get('submit') == 'delete':
             crud.delete_mov(conn, newtt)
             flash('movie was deleted successfully')
-            return redirect(url_for('index', page_title = 'Welcome')) 
+            return redirect(url_for('index')) 
 
 @app.route('/select/', methods=['GET','POST'])
 def select():
@@ -97,7 +100,7 @@ def select():
         session['release'] = info['release']
         session['director'] = info['director']
         session['addedby'] = info['addedby']
-        return redirect(url_for('update', page_title = 'Update', tt = tt)) 
+        return redirect(url_for('update', tt = tt)) 
 
 @app.before_first_request
 def init_db():
