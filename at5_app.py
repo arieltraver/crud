@@ -49,8 +49,8 @@ def insert():
             except:
                 flash('tt must be an integer')
                 return redirect(url_for('insert'))        
-            if len(release) > 10:
-                flash('date format: mm/dd/yyyy')
+            if len(release) > 4:
+                flash('date format: yyyy')
                 return redirect(url_for('insert'))
             conn = dbi.connect()
             if len(crud.check_tt(conn, tt)) == 0:
@@ -59,6 +59,7 @@ def insert():
                 session['title'] = title
                 session['release'] = release
                 return redirect(url_for('update', tt = tt))
+            else: flash('tt already exists')
     return redirect(url_for('insert'))
 
 @app.route('/update/<int:tt>', methods=['GET','POST'])

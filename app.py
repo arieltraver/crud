@@ -40,9 +40,18 @@ def insert():
         tt = request.form.get('movie-tt')
         title = request.form.get('movie-title')
         release = request.form.get('movie-release')
-        if not tt or not title or not release: 
+        #sanitizing inputs
+        if not tt or not title or not release:
             flash('missing input')
         else:
+            try:
+                int(tt)
+            except:
+                flash('tt must be an integer')
+                return redirect(url_for('insert'))        
+            if len(release) > 4:
+                flash('date format: yyyy')
+                return redirect(url_for('insert'))
             conn = dbi.connect()
             if len(crud.check_tt(conn, tt)) == 0:
                 flash('tt does not already exist')
@@ -50,6 +59,7 @@ def insert():
                 session['title'] = title
                 session['release'] = release
                 return redirect(url_for('update', tt = tt))
+            else: flash('tt already exists')
     return redirect(url_for('insert'))
 
 @app.route('/update/<int:tt>', methods=['GET','POST'])
