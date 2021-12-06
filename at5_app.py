@@ -40,9 +40,18 @@ def insert():
         tt = request.form.get('movie-tt')
         title = request.form.get('movie-title')
         release = request.form.get('movie-release')
-        if not tt or not title or not release: 
+        #sanitizing inputs
+        if not tt or not title or not release:
             flash('missing input')
         else:
+            try:
+                int(tt)
+            except:
+                flash('tt must be an integer')
+                return redirect(url_for('insert'))        
+            if len(release) > 10:
+                flash('date format: mm/dd/yyyy')
+                return redirect(url_for('insert'))
             conn = dbi.connect()
             if len(crud.check_tt(conn, tt)) == 0:
                 flash('tt does not already exist')
